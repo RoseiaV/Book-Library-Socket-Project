@@ -1,6 +1,5 @@
 package main.java.client.student.model;
 
-import main.java.client.socketConnector;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

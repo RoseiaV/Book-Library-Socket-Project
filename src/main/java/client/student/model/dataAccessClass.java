@@ -3,8 +3,8 @@ package main.java.client.student.model;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 
-import main.java.client.socketConnector;
 import main.java.common.*;
 
 import javax.swing.*;
@@ -12,12 +12,17 @@ import javax.swing.*;
 public class dataAccessClass {
     private ObjectOutputStream objectOutputStream;
     private ObjectInputStream objectInputStream;
-    private socketConnector socketConnector;
+    private Socket socket;
 
     public dataAccessClass(){}
-
-    public dataAccessClass(socketConnector socketConnector){
-        this.socketConnector = socketConnector;
+    public dataAccessClass(String ip){
+        try {
+            socket = new Socket(ip, 10000);
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void switchPanel(JPanel mainPanel, JPanel switchedPanel){
@@ -34,26 +39,14 @@ public class dataAccessClass {
         mainPanel.revalidate();
     }
 
-    public void logIn(String ip, int port, Accounts accounts, JFrame mainFrame, JFrame logFrame, Operation operation){
+    public void logOut(Accounts accounts){
+        Operation operation = new Operation("client", "logout");
         try {
-            socketConnector socket = new socketConnector(ip, port);
-            this.objectOutputStream = socket.getObjectOutputStream();
-            objectOutputStream.writeObject(accounts); //Send the Account to the Server
-            objectOutputStream.writeObject(operation); //Send the Instructions to the Server
-
-
-            objectOutputStream.flush();
-            objectOutputStream.close();
+            objectOutputStream.writeObject(operation);
+            objectOutputStream.writeObject(accounts);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void sendBookRequest(socketConnector socketConnector, BooksRequestee booksRequestee, Operation operation){
-
-    }
-
-    public void sendRemoveBookRequest(socketConnector socketConnector, BooksRequestee booksRequestee, Operation operation){
-
-    }
 }

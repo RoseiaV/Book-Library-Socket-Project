@@ -20,6 +20,7 @@ public class application extends JFrame {
     private JButton transcriptButton;
     private JLabel userIdLabel;
     private JLabel userMailLabel;
+    private JLabel ip;
     private homePanel homePanel;
 
     public application() {
@@ -39,6 +40,7 @@ public class application extends JFrame {
         logOutButton = new JButton();
         userIdLabel = new JLabel();
         userMailLabel = new JLabel();
+        ip = new JLabel();
         bodyPanel = new JPanel();
         homePanel = new homePanel();
     }
@@ -175,5 +177,13 @@ public class application extends JFrame {
 
     public JPanel getBodyPanel() {
         return bodyPanel;
+    }
+
+    public JLabel getIp() {
+        return ip;
+    }
+
+    public void setIp(JLabel ip) {
+        this.ip = ip;
     }
 }

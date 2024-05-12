@@ -1,10 +1,10 @@
 package main.java.common;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 public class Accounts implements Serializable {
     private String accountImageName;
+    private byte[] imageByte;
     private String id;
     private String name;
     private String username;
@@ -15,9 +15,9 @@ public class Accounts implements Serializable {
     private Boolean status;
     private String statusString;
 
-
-    public Accounts(String accountImageName, String id, String name, String username, String password, String course, String bio, String role, Boolean status){
+    public Accounts(String accountImageName, byte[] imageByte, String id, String name, String username, String password, String course, String role, Boolean status){
         this.accountImageName = accountImageName;
+        this.imageByte = imageByte;
         this.id = id;
         this.name = name;
         this.username = username;
@@ -46,15 +46,15 @@ public class Accounts implements Serializable {
         this.password = password;
     }
 
-    public Accounts(String username, String password){
+    public Accounts(String id, String username){
+        this.id = id;
         this.username = username;
-        this.password = password;
     }
 
-    public void setAccountImageName(String accountImageName) {
-        this.accountImageName = accountImageName;
+    public String getAccountImageName() {
+        return accountImageName;
     }
-
+    public byte[] getImageByte() { return imageByte; }
     public String getId() {
         return id;
     }
@@ -80,9 +80,8 @@ public class Accounts implements Serializable {
         return status;
     }
 
-    public String getAccountImageName() {
-        return accountImageName;
-    }
+    public void setAccountImageName(String accountImageName) {this.accountImageName = accountImageName;}
+    public void setImageByte(byte[] imageByte) {this.imageByte = imageByte;}
     public void setId(String id) {
         this.id = id;
     }
@@ -107,9 +106,5 @@ public class Accounts implements Serializable {
     public void setStatus(Boolean status) {
         this.status = status;
     }
-    public void setStatusString(String statusString) {
-    }
 
-    public void setDateUpdated(LocalDate dateUpdated) {
-    }
 }

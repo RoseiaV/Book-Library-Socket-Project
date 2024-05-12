@@ -7,10 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientHandler implements Runnable{
@@ -32,9 +29,7 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run(){
-        System.out.println("Public void run()");
         try {
-            System.out.println("Running");
             operation = (Operation) objectInputStream.readObject();
 //            Object object = (Object) objectInputStream.readObject();
 //            while ((operation = (Operation) objectInputStream.readObject()) != null){
@@ -99,29 +94,39 @@ public class ClientHandler implements Runnable{
                     Accounts account = (Accounts) objectInputStream.readObject();
                     System.out.println("Account info -> " + account.getUsername() + " , " + account.getPassword());
                     //Iterate the List of Accounts parsed in the serverModel.Class
-                    for (Accounts accounts : accountsList){
-                        //Check if the Account Exist
-                        if (accounts.getUsername().equals(account.getUsername()) && accounts.getPassword().equals(account.getPassword())){
-                            if (loggedAccount.containsValue(account.getUsername())){ //Check if the Account is Logged already in used
+                    if (loggedAccount.containsValue(account.getUsername())){ //Check if the Account is Logged already in used
+                        System.out.println("Account is Currently in used");
+                        objectOutputStream.writeObject("accountIsUsed");
+                    } else {
+                        for (Accounts accounts : accountsList){
+                            //Check if the Account Exist
+                            if (accounts.getUsername().equals(account.getUsername()) && accounts.getPassword().equals(account.getPassword())){
                                 System.out.println("Putting " + account.getUsername() + account.getPassword() + " to the Concurrent hashmap");
                                 loggedAccount.put(accounts.getId(),account.getUsername());
                                 System.out.println("Concurrent Hashmap -> " + loggedAccount);
 
                                 System.out.println("Sending response to the client");
                                 objectOutputStream.writeObject("valid"); //Notify the Client that the account is valid
+                                objectOutputStream.writeObject(accounts); //Send the full Information of that Account
                             } else {
-                                System.out.println("Account is Currently in used");
-                                objectOutputStream.writeObject("accountIsUsed");
+                                System.out.println("Account does not Exist");
+                                objectOutputStream.writeObject("accountNotExist");
                             }
-                        } else {
-                            System.out.println("Account does not Exist");
-                            objectOutputStream.writeObject("accountNotExist");
                         }
                     }
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
+                } finally {
+                    try {
+                        objectInputStream.close();
+                        objectOutputStream.flush();
+                        objectOutputStream.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 break;
             case "getCategory" :
@@ -153,6 +158,34 @@ public class ClientHandler implements Runnable{
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                break;
+            case "logout" :
+                System.out.println("Client is logging out");
+                try {
+                    Accounts accounts = (Accounts) objectInputStream.readObject();
+                    Iterator<String> iteratedLogAcc = loggedAccount.keySet().iterator();
+                    while (iteratedLogAcc.hasNext()){
+                        if (loggedAccount.containsKey(accounts.getId())){
+                            loggedAccount.remove(accounts.getId());
+                            System.out.println("Key Removed");
+                            System.out.println("Current User stored in HashTable : " + loggedAccount);
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    try {
+                        objectInputStream.close();
+                        objectOutputStream.flush();
+                        objectOutputStream.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                break;
+            default: System.out.println("Error"); break;
         }
     }
 

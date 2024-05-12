@@ -1,6 +1,5 @@
 package main.java.client.student.controller;
 
-import main.java.client.socketConnector;
 import main.java.client.student.view.*;
 
 import main.java.client.student.model.*;
