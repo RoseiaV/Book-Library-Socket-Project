@@ -1,0 +1,22 @@
+<Accounts>
+    <account>
+        <imageName>image.jpg</imageName>
+        <id>2234485</id>
+        <name>Ralph Aloven Liquigan</name>
+        <username>2234485@slu.edu.ph</username>
+        <password>qwerty</password>
+        <course>BSIT-2</course>
+        <role>Librarian</role>
+        <status>true</status>
+    </account>
+    <account>
+        <imageName>image.jpg</imageName>
+        <id>2234455</id>
+        <name>Ralph Aloven</name>
+        <username>2234455@slu.edu.ph</username>
+        <password>qwerty</password>
+        <course>BSIT-2</course>
+        <role>Librarian</role>
+        <status>true</status>
+    </account>
+</Accounts>
